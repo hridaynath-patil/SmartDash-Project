@@ -17,17 +17,25 @@ const Navbar = () => {
 
   return (
     <nav className="navbar glass">
-      <div className="navbar-search">
-        <Search size={20} className="text-muted" />
-        <input type="text" placeholder="Search anything..." />
-      </div>
+      {user ? (
+        <div className="navbar-search">
+          <Search size={20} className="text-muted" />
+          <input type="text" placeholder="Search anything..." />
+        </div>
+      ) : (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <h2 style={{ color: 'var(--primary)', margin: 0, fontSize: '1.5rem', fontWeight: 'bold' }}>SmartDash</h2>
+        </div>
+      )}
       <div className="navbar-actions">
         <button className="icon-btn" onClick={toggleTheme} title="Toggle Theme">
           {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
         </button>
-        <button className="icon-btn">
-          <Bell size={20} />
-        </button>
+        {user && (
+          <button className="icon-btn">
+            <Bell size={20} />
+          </button>
+        )}
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div className="avatar" title={user.name}>
