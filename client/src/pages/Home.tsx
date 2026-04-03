@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Home = () => {
   return (
     <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem', marginTop: '2rem' }}>
@@ -13,12 +15,12 @@ const Home = () => {
         Manage your tasks, write notes, monitor the weather, and search for movies, all in one sleek interface.
       </p>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-        <a href="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem' }}>
+        <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem' }}>
           Go to Dashboard
-        </a>
-        <a href="/tasks" className="btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem', background: 'var(--bg-color)', border: '1px solid var(--border)' }}>
+        </Link>
+        <Link to="/tasks" className="btn" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem', background: 'var(--bg-color)', border: '1px solid var(--border)' }}>
           Start Planning
-        </a>
+        </Link>
       </div>
     </div>
   );
