@@ -1,8 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { Home, LayoutDashboard, CheckSquare, StickyNote, CloudRain, Film, User } from 'lucide-react';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = () => {
+  const { user } = useContext(AuthContext);
+  if (!user) return null;
+
   const links = [
     { name: 'Home', path: '/', icon: <Home size={20} /> },
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },

@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext';
 import { TaskProvider } from './context/TaskContext';
 import { NoteProvider } from './context/NoteContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Lazy load pages for optimization
 const Home = lazy(() => import('./pages/Home'));
@@ -40,14 +41,14 @@ function App() {
                     <Suspense fallback={<Loader />}>
                       <Routes>
                         <Route path="/" element={<Home />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Signup />} />
-                        <Route path="/tasks" element={<Tasks />} />
-                        <Route path="/notes" element={<Notes />} />
-                        <Route path="/weather" element={<Weather />} />
-                        <Route path="/movies" element={<Movies />} />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                        <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+                        <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
+                        <Route path="/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />
+                        <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                       </Routes>
                     </Suspense>
                   </div>
