@@ -32,7 +32,7 @@ export const NoteProvider = ({ children }: { children: ReactNode }) => {
   const fetchNotes = async () => {
     if (!user) return;
     try {
-      const res = await fetch('http://localhost:5000/api/notes', {
+      const res = await fetch('https://smartdash-project-backend.onrender.com/api/notes', {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -45,7 +45,7 @@ export const NoteProvider = ({ children }: { children: ReactNode }) => {
   const createNote = async (title: string, content: string) => {
     if (!user) return;
     try {
-      const res = await fetch('http://localhost:5000/api/notes', {
+      const res = await fetch('https://smartdash-project-backend.onrender.com/api/notes', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export const NoteProvider = ({ children }: { children: ReactNode }) => {
   const updateNote = async (id: string, title: string, content: string) => {
     if (!user) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/notes/${id}`, {
+      const res = await fetch(`https://smartdash-project-backend.onrender.com/api/notes/${id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export const NoteProvider = ({ children }: { children: ReactNode }) => {
   const deleteNote = async (id: string) => {
     if (!user) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/notes/${id}`, {
+      const res = await fetch(`https://smartdash-project-backend.onrender.com/api/notes/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${user.token}` }
       });

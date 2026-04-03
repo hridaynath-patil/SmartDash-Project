@@ -31,7 +31,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const fetchTasks = async () => {
     if (!user) return;
     try {
-      const res = await fetch('http://localhost:5000/api/tasks', {
+      const res = await fetch('https://smartdash-project-backend.onrender.com/api/tasks', {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       const data = await res.json();
@@ -44,7 +44,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const addTask = async (title: string) => {
     if (!user) return;
     try {
-      const res = await fetch('http://localhost:5000/api/tasks', {
+      const res = await fetch('https://smartdash-project-backend.onrender.com/api/tasks', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   const deleteTask = async (id: string) => {
     if (!user) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const res = await fetch(`https://smartdash-project-backend.onrender.com/api/tasks/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${user.token}` }
       });
@@ -76,7 +76,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     const newStatus = currentStatus === 'completed' ? 'pending' : 'completed';
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      const res = await fetch(`https://smartdash-project-backend.onrender.com/api/tasks/${id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
