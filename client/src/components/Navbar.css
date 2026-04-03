@@ -83,3 +83,27 @@
   height: 100%;
   object-fit: cover;
 }
+
+.mobile-menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .navbar-search {
+    width: auto;
+    flex-grow: 1;
+    max-width: 180px;
+  }
+  
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .navbar-actions {
+    gap: 0.5rem;
+  }
+}

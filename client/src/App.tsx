@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -27,6 +27,8 @@ const Loader = () => (
 );
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -34,9 +36,9 @@ function App() {
           <NoteProvider>
             <Router>
               <div className="app-container">
-                <Sidebar />
+                <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
                 <div className="main-content">
-                  <Navbar />
+                  <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
                   <div className="page-content">
                     <Suspense fallback={<Loader />}>
                       <Routes>

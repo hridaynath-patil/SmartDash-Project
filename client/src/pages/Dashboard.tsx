@@ -77,7 +77,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem' }}>
+      <div className="dashboard-grid">
         <div className="card">
           <h3 style={{ marginBottom: '1.5rem' }}>Weekly Activity</h3>
           <div style={{ height: '300px' }}>

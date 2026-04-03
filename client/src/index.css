@@ -129,3 +129,21 @@ a {
 .page-content > * {
   animation: fadeIn 0.4s ease-out forwards;
 }
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

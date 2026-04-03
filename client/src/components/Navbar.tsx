@@ -1,11 +1,15 @@
 import { useContext } from 'react';
-import { Search, Bell, Moon, Sun } from 'lucide-react';
+import { Search, Bell, Moon, Sun, Menu } from 'lucide-react';
 import { ThemeContext } from '../context/ThemeContext';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = () => {
+interface NavbarProps {
+  toggleSidebar?: () => void;
+}
+
+const Navbar = ({ toggleSidebar }: NavbarProps) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { user, logout, avatar } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -18,9 +22,14 @@ const Navbar = () => {
   return (
     <nav className="navbar glass">
       {user ? (
-        <div className="navbar-search">
-          <Search size={20} className="text-muted" />
-          <input type="text" placeholder="Search anything..." />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button className="icon-btn mobile-menu-btn" onClick={toggleSidebar}>
+            <Menu size={20} />
+          </button>
+          <div className="navbar-search">
+            <Search size={20} className="text-muted" />
+            <input type="text" placeholder="Search anything..." />
+          </div>
         </div>
       ) : (
         <div style={{ display: 'flex', alignItems: 'center' }}>

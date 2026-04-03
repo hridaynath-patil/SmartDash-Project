@@ -1,10 +1,15 @@
 import { NavLink } from 'react-router-dom';
-import { Home, LayoutDashboard, CheckSquare, StickyNote, CloudRain, Film, User } from 'lucide-react';
+import { Home, LayoutDashboard, CheckSquare, StickyNote, CloudRain, Film, User, X } from 'lucide-react';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const { user } = useContext(AuthContext);
   if (!user) return null;
 
@@ -19,10 +24,16 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        <h2>SmartDash</h2>
-      </div>
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && <div className="sidebar-backdrop" onClick={() => setIsOpen(false)}></div>}
+      <div className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
+        <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
+          <h2>SmartDash</h2>
+          <button className="icon-btn mobile-close-btn" onClick={() => setIsOpen(false)}>
+            <X size={20} />
+          </button>
+        </div>
       <nav className="sidebar-nav">
         {links.map((link) => (
           <NavLink 
@@ -36,6 +47,7 @@ const Sidebar = () => {
         ))}
       </nav>
     </div>
+    </>
   );
 };
 
