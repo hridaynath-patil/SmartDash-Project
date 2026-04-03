@@ -48,7 +48,7 @@ const Profile = () => {
     <div style={{ maxWidth: '900px', margin: '0 auto' }}>
       <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>My Profile</h2>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '250px 1fr', gap: '2rem' }}>
+      <div className="profile-layout">
         
         {/* Sidebar for Profile */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -129,7 +129,7 @@ const Profile = () => {
               </div>
 
               <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem' }}>Platform Stats</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+              <div className="stats-layout">
                 <div style={{ background: 'var(--bg-color)', padding: '1.5rem', borderRadius: 'var(--radius-md)', textAlign: 'center', border: '1px solid var(--border)' }}>
                   <p style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.25rem' }}>{tasks.length}</p>
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Total Tasks</p>
