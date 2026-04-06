@@ -121,9 +121,9 @@ const Tasks = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
-          <button className={`btn ${filter === 'all' ? 'btn-primary' : ''}`} onClick={() => setFilter('all')} style={{ background: filter !== 'all' ? 'var(--bg-color)' : '', border: filter !== 'all' ? '1px solid var(--border)' : '' }}>All</button>
-          <button className={`btn ${filter === 'pending' ? 'btn-primary' : ''}`} onClick={() => setFilter('pending')} style={{ background: filter !== 'pending' ? 'var(--bg-color)' : '', border: filter !== 'pending' ? '1px solid var(--border)' : '' }}>Pending</button>
-          <button className={`btn ${filter === 'completed' ? 'btn-primary' : ''}`} onClick={() => setFilter('completed')} style={{ background: filter !== 'completed' ? 'var(--bg-color)' : '', border: filter !== 'completed' ? '1px solid var(--border)' : '' }}>Completed</button>
+          <button className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setFilter('all')}>All</button>
+          <button className={`btn ${filter === 'pending' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setFilter('pending')}>Pending</button>
+          <button className={`btn ${filter === 'completed' ? 'btn-primary' : 'btn-outline'}`} onClick={() => setFilter('completed')}>Completed</button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
