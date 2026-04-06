@@ -1,14 +1,23 @@
 import { useState, useContext, useMemo } from 'react';
 import { TaskContext } from '../context/TaskContext';
 import { AuthContext } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Check, Trash2, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+interface ConfirmState {
+  open: boolean;
+  taskId: string;
+  taskTitle: string;
+}
 
 const Tasks = () => {
   const { tasks, addTask, deleteTask, toggleTaskStatus } = useContext(TaskContext);
   const { user } = useContext(AuthContext);
+  const { showToast } = useToast();
   const [newTask, setNewTask] = useState('');
   const [filter, setFilter] = useState('all');
+  const [confirm, setConfirm] = useState<ConfirmState>({ open: false, taskId: '', taskTitle: '' });
   const navigate = useNavigate();
 
   if (!user) {
@@ -25,6 +34,21 @@ const Tasks = () => {
     if (!newTask.trim()) return;
     addTask(newTask);
     setNewTask('');
+    showToast('Task added successfully!', 'success');
+  };
+
+  const requestDelete = (taskId: string, taskTitle: string) => {
+    setConfirm({ open: true, taskId, taskTitle });
+  };
+
+  const confirmDelete = () => {
+    deleteTask(confirm.taskId);
+    showToast('Task deleted.', 'info');
+    setConfirm({ open: false, taskId: '', taskTitle: '' });
+  };
+
+  const cancelDelete = () => {
+    setConfirm({ open: false, taskId: '', taskTitle: '' });
   };
 
   const filteredTasks = useMemo(() => {
@@ -34,54 +58,70 @@ const Tasks = () => {
   }, [tasks, filter]);
 
   return (
-    <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '1.5rem', fontSize: '2rem' }}>Task Manager</h2>
-      
-      <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-        <input 
-          type="text" 
-          placeholder="What needs to be done?" 
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          style={{ flexGrow: 1, padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '1rem' }}
-        />
-        <button type="submit" className="btn btn-primary" style={{ display: 'flex', gap: '0.5rem' }}>
-          <Plus size={20} /> Add Task
-        </button>
-      </form>
-
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
-        <button className={`btn ${filter === 'all' ? 'btn-primary' : ''}`} onClick={() => setFilter('all')} style={{ background: filter !== 'all' ? 'var(--bg-color)' : '', border: filter !== 'all' ? '1px solid var(--border)' : '' }}>All</button>
-        <button className={`btn ${filter === 'pending' ? 'btn-primary' : ''}`} onClick={() => setFilter('pending')} style={{ background: filter !== 'pending' ? 'var(--bg-color)' : '', border: filter !== 'pending' ? '1px solid var(--border)' : '' }}>Pending</button>
-        <button className={`btn ${filter === 'completed' ? 'btn-primary' : ''}`} onClick={() => setFilter('completed')} style={{ background: filter !== 'completed' ? 'var(--bg-color)' : '', border: filter !== 'completed' ? '1px solid var(--border)' : '' }}>Completed</button>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {filteredTasks.length === 0 ? (
-          <p className="text-muted" style={{ textAlign: 'center', padding: '2rem', fontStyle: 'italic' }}>No tasks found for the current filter.</p>
-        ) : (
-          filteredTasks.map((task) => (
-            <div key={task._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', backgroundColor: 'var(--surface)', transition: 'var(--transition)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <button 
-                  className="icon-btn" 
-                  onClick={() => toggleTaskStatus(task._id, task.status)}
-                  style={{ border: `2px solid ${task.status === 'completed' ? 'var(--primary)' : 'var(--text-muted)'}`, padding: '0.2rem', backgroundColor: task.status === 'completed' ? 'var(--primary)' : 'transparent', color: task.status === 'completed' ? 'white' : 'transparent', borderRadius: '50%' }}
-                >
-                  <Check size={14} />
-                </button>
-                <span style={{ textDecoration: task.status === 'completed' ? 'line-through' : 'none', color: task.status === 'completed' ? 'var(--text-muted)' : 'var(--text-main)', fontSize: '1.05rem', fontWeight: 500 }}>
-                  {task.title}
-                </span>
-              </div>
-              <button className="icon-btn" onClick={() => deleteTask(task._id)} style={{ color: '#ef4444' }}>
-                <Trash2 size={18} />
-              </button>
+    <>
+      {/* Confirm Delete Dialog */}
+      {confirm.open && (
+        <div className="confirm-overlay">
+          <div className="confirm-box">
+            <h4>Delete Task?</h4>
+            <p>Are you sure you want to delete "<strong>{confirm.taskTitle}</strong>"? This action cannot be undone.</p>
+            <div className="confirm-actions">
+              <button className="btn btn-ghost" onClick={cancelDelete}>Cancel</button>
+              <button className="btn btn-danger" onClick={confirmDelete}>Delete</button>
             </div>
-          ))
-        )}
+          </div>
+        </div>
+      )}
+
+      <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <h2 style={{ marginBottom: '1.5rem', fontSize: '2rem' }}>Task Manager</h2>
+        
+        <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+          <input 
+            type="text" 
+            placeholder="What needs to be done?" 
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            style={{ flexGrow: 1, padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '1rem' }}
+          />
+          <button type="submit" className="btn btn-primary" style={{ display: 'flex', gap: '0.5rem' }}>
+            <Plus size={20} /> Add Task
+          </button>
+        </form>
+
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
+          <button className={`btn ${filter === 'all' ? 'btn-primary' : ''}`} onClick={() => setFilter('all')} style={{ background: filter !== 'all' ? 'var(--bg-color)' : '', border: filter !== 'all' ? '1px solid var(--border)' : '' }}>All</button>
+          <button className={`btn ${filter === 'pending' ? 'btn-primary' : ''}`} onClick={() => setFilter('pending')} style={{ background: filter !== 'pending' ? 'var(--bg-color)' : '', border: filter !== 'pending' ? '1px solid var(--border)' : '' }}>Pending</button>
+          <button className={`btn ${filter === 'completed' ? 'btn-primary' : ''}`} onClick={() => setFilter('completed')} style={{ background: filter !== 'completed' ? 'var(--bg-color)' : '', border: filter !== 'completed' ? '1px solid var(--border)' : '' }}>Completed</button>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {filteredTasks.length === 0 ? (
+            <p className="text-muted" style={{ textAlign: 'center', padding: '2rem', fontStyle: 'italic' }}>No tasks found for the current filter.</p>
+          ) : (
+            filteredTasks.map((task) => (
+              <div key={task._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', backgroundColor: 'var(--surface)', transition: 'var(--transition)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <button 
+                    className="icon-btn" 
+                    onClick={() => toggleTaskStatus(task._id, task.status)}
+                    style={{ border: `2px solid ${task.status === 'completed' ? 'var(--primary)' : 'var(--text-muted)'}`, padding: '0.2rem', backgroundColor: task.status === 'completed' ? 'var(--primary)' : 'transparent', color: task.status === 'completed' ? 'white' : 'transparent', borderRadius: '50%' }}
+                  >
+                    <Check size={14} />
+                  </button>
+                  <span style={{ textDecoration: task.status === 'completed' ? 'line-through' : 'none', color: task.status === 'completed' ? 'var(--text-muted)' : 'var(--text-main)', fontSize: '1.05rem', fontWeight: 500 }}>
+                    {task.title}
+                  </span>
+                </div>
+                <button className="icon-btn" onClick={() => requestDelete(task._id, task.title)} style={{ color: '#ef4444' }}>
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

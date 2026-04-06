@@ -3,7 +3,7 @@ import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { TaskContext } from '../context/TaskContext';
 import { NoteContext } from '../context/NoteContext';
-import { User, Mail, Calendar, Settings, LogOut, Moon, Sun, Edit3, Shield, Camera } from 'lucide-react';
+import { User, Mail, Calendar, Settings, LogOut, Moon, Sun, Edit3, Shield, Camera, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
@@ -14,6 +14,8 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('overview');
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -185,8 +187,36 @@ const Profile = () => {
               <div style={{ marginBottom: '2rem' }}>
                 <h4 style={{ marginBottom: '1rem' }}>Change Password</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-                  <input type="password" placeholder="Current Password" style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none' }} />
-                  <input type="password" placeholder="New Password" style={{ width: '100%', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none' }} />
+                  <div className="password-wrapper">
+                    <input
+                      type={showCurrentPw ? 'text' : 'password'}
+                      placeholder="Current Password"
+                      style={{ width: '100%', padding: '0.75rem', paddingRight: '2.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none' }}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowCurrentPw((v) => !v)}
+                      aria-label={showCurrentPw ? 'Hide password' : 'Show password'}
+                    >
+                      {showCurrentPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  <div className="password-wrapper">
+                    <input
+                      type={showNewPw ? 'text' : 'password'}
+                      placeholder="New Password"
+                      style={{ width: '100%', padding: '0.75rem', paddingRight: '2.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none' }}
+                    />
+                    <button
+                      type="button"
+                      className="password-toggle"
+                      onClick={() => setShowNewPw((v) => !v)}
+                      aria-label={showNewPw ? 'Hide new password' : 'Show new password'}
+                    >
+                      {showNewPw ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                   <button className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>Update Password</button>
                 </div>
               </div>
