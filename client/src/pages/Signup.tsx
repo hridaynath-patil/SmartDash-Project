@@ -14,8 +14,13 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!name || !email || !password) {
       setError('Please fill all fields');
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
       return;
     }
     setError('');
@@ -42,8 +47,8 @@ const Signup = () => {
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
       <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '2rem' }}>Create Account</h2>
-        {error && <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', padding: '0.6rem', background: 'rgba(239,68,68,0.08)', borderRadius: 'var(--radius-md)' }}>{error}</div>}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {error && <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', padding: '0.75rem', background: 'rgba(239,68,68,0.08)', borderRadius: 'var(--radius-md)', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.2)' }}>{error}</div>}
+        <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Name</label>
             <input 

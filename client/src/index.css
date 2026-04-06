@@ -41,6 +41,7 @@ body {
   color: var(--text-main);
   transition: var(--transition);
   -webkit-font-smoothing: antialiased;
+  scrollbar-gutter: stable;
 }
 
 /* Layout */
@@ -348,3 +349,64 @@ a {
   transition: color 0.2s;
 }
 .password-toggle:hover { color: var(--text-main); }
+
+/* ===== Dropdown Menu ===== */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  min-width: 160px;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-color);
+}
+
+.dropdown-item.danger {
+  color: #ef4444;
+}
+
+/* ===== Notes Card Menu ===== */
+.note-menu-btn {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.card:hover .note-menu-btn {
+  opacity: 1;
+}
+
+/* Hide desktop close icon in Sidebar */
+@media (min-width: 769px) {
+  .mobile-close-btn {
+    display: none !important;
+  }
+}

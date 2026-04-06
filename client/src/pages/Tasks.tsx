@@ -2,7 +2,7 @@ import { useState, useContext, useMemo } from 'react';
 import { TaskContext } from '../context/TaskContext';
 import { AuthContext } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { Check, Trash2, Plus } from 'lucide-react';
+import { Check, Trash2, Plus, Search, X as CloseIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ConfirmState {
@@ -16,6 +16,7 @@ const Tasks = () => {
   const { user } = useContext(AuthContext);
   const { showToast } = useToast();
   const [newTask, setNewTask] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [confirm, setConfirm] = useState<ConfirmState>({ open: false, taskId: '', taskTitle: '' });
   const navigate = useNavigate();
@@ -52,10 +53,16 @@ const Tasks = () => {
   };
 
   const filteredTasks = useMemo(() => {
-    if (filter === 'completed') return tasks.filter(t => t.status === 'completed');
-    if (filter === 'pending') return tasks.filter(t => t.status === 'pending');
-    return tasks;
-  }, [tasks, filter]);
+    let result = tasks;
+    if (filter === 'completed') result = tasks.filter(t => t.status === 'completed');
+    if (filter === 'pending') result = tasks.filter(t => t.status === 'pending');
+    
+    if (searchQuery.trim()) {
+      result = result.filter(t => t.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+    
+    return result;
+  }, [tasks, filter, searchQuery]);
 
   return (
     <>
@@ -76,18 +83,42 @@ const Tasks = () => {
       <div className="card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         <h2 style={{ marginBottom: '1.5rem', fontSize: '2rem' }}>Task Manager</h2>
         
-        <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+        <form onSubmit={handleAddTask} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
           <input 
             type="text" 
-            placeholder="What needs to be done?" 
+            placeholder="Add a new task..." 
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
             style={{ flexGrow: 1, padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '1rem' }}
           />
-          <button type="submit" className="btn btn-primary" style={{ display: 'flex', gap: '0.5rem' }}>
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            disabled={!newTask.trim()}
+            style={{ display: 'flex', gap: '0.5rem', opacity: !newTask.trim() ? 0.6 : 1, cursor: !newTask.trim() ? 'not-allowed' : 'pointer' }}
+          >
             <Plus size={20} /> Add Task
           </button>
         </form>
+
+        <div style={{ position: 'relative', marginBottom: '2rem' }}>
+          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <input 
+            type="text" 
+            placeholder="Search tasks..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: '100%', padding: '0.75rem 1rem 0.75rem 2.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.95rem' }}
+          />
+          {searchQuery && (
+            <button 
+              onClick={() => setSearchQuery('')}
+              style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex' }}
+            >
+              <CloseIcon size={16} />
+            </button>
+          )}
+        </div>
 
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
           <button className={`btn ${filter === 'all' ? 'btn-primary' : ''}`} onClick={() => setFilter('all')} style={{ background: filter !== 'all' ? 'var(--bg-color)' : '', border: filter !== 'all' ? '1px solid var(--border)' : '' }}>All</button>

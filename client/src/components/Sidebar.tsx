@@ -28,9 +28,9 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
       {/* Mobile backdrop */}
       {isOpen && <div className="sidebar-backdrop" onClick={() => setIsOpen(false)}></div>}
       <div className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
-        <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
-          <h2>SmartDash</h2>
-          <button className="icon-btn mobile-close-btn" onClick={() => setIsOpen(false)}>
+        <div className="sidebar-header" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
+          <h2 style={{ margin: 0 }}>SmartDash</h2>
+          <button className="icon-btn mobile-close-btn" onClick={() => setIsOpen(false)} style={{ position: 'absolute', right: '1rem' }}>
             <X size={20} />
           </button>
         </div>

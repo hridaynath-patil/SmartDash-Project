@@ -105,10 +105,10 @@ const Dashboard = () => {
               </div>
             ) : (
               recentTasks.map((task: any) => (
-                <div key={task._id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
-                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: task.status === 'completed' ? '#10b981' : 'var(--primary)' }}></div>
+                <div key={task._id} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: task.status === 'completed' ? '#10b981' : 'var(--primary)', marginTop: '0.45rem', flexShrink: 0 }}></div>
                   <div style={{ flexGrow: 1 }}>
-                    <p style={{ fontWeight: 500, textDecoration: task.status === 'completed' ? 'line-through' : 'none', color: task.status === 'completed' ? 'var(--text-muted)' : 'var(--text-main)' }}>{task.title}</p>
+                    <p style={{ fontWeight: 500, lineHeight: '1.4', textDecoration: task.status === 'completed' ? 'line-through' : 'none', color: task.status === 'completed' ? 'var(--text-muted)' : 'var(--text-main)' }}>{task.title}</p>
                   </div>
                 </div>
               ))

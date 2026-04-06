@@ -2,7 +2,7 @@ import { useState, useContext, useRef, useCallback } from 'react';
 import { NoteContext } from '../context/NoteContext';
 import { AuthContext } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { Trash2, Edit2, Plus, X, Save, Bold, Italic, Underline, List, ListOrdered } from 'lucide-react';
+import { Trash2, Edit2, Plus, X, Save, Bold, Italic, Underline, List, ListOrdered, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface ConfirmState {
@@ -22,6 +22,7 @@ const Notes = () => {
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState('');
   const [confirm, setConfirm] = useState<ConfirmState>({ open: false, noteId: '', noteTitle: '' });
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const editorRef = useRef<HTMLDivElement>(null);
 
   if (!user) {
@@ -136,66 +137,44 @@ const Notes = () => {
         </div>
 
         {isEditing ? (
-          <div className="card" style={{ maxWidth: '860px', margin: '0 auto', padding: 0, overflow: 'hidden', animation: 'fadeIn 0.3s' }}>
-            {/* Editor Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)' }}>
-              <h3 style={{ fontSize: '1.25rem' }}>{currentId ? 'Edit Note' : 'New Note'}</h3>
-              <button className="icon-btn" onClick={closeEditor}><X size={22} /></button>
+          <div className="card" style={{ maxWidth: '800px', margin: '0 auto', padding: '1.5rem', animation: 'fadeIn 0.3s' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', margin: 0 }}>{currentId ? 'Edit Note' : 'New Note'}</h3>
+              <button className="icon-btn" onClick={closeEditor}><X size={20} /></button>
             </div>
 
-            {/* Title Input */}
-            <div style={{ padding: '1rem 1.5rem 0' }}>
-              <input 
-                type="text" 
-                placeholder="Note title…" 
-                value={title}
-                onChange={(e) => { setTitle(e.target.value); setTitleError(''); }}
-                style={{ width: '100%', padding: '0.75rem 0', fontSize: '1.3rem', fontWeight: 700, border: 'none', borderBottom: `1px solid ${titleError ? '#ef4444' : 'var(--border)'}`, background: 'transparent', color: 'var(--text-main)', outline: 'none' }}
+            <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden', background: 'var(--bg-color)' }}>
+              <div style={{ padding: '0.75rem 1rem', borderBottom: '1px solid var(--border)' }}>
+                <input 
+                  type="text" 
+                  placeholder="Note title..." 
+                  value={title}
+                  onChange={(e) => { setTitle(e.target.value); setTitleError(''); }}
+                  style={{ width: '100%', fontSize: '1.1rem', fontWeight: 600, border: 'none', background: 'transparent', color: 'var(--text-main)', outline: 'none' }}
+                />
+                {titleError && <p style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '0.25rem' }}>{titleError}</p>}
+              </div>
+
+              <div className="rte-toolbar" style={{ padding: '0.4rem 0.75rem', background: 'var(--surface)' }}>
+                <button type="button" className="rte-btn" title="Bold" onMouseDown={(e) => { e.preventDefault(); execFormat('bold'); }}><Bold size={14} /></button>
+                <button type="button" className="rte-btn" title="Italic" onMouseDown={(e) => { e.preventDefault(); execFormat('italic'); }}><Italic size={14} /></button>
+                <button type="button" className="rte-btn" title="Underline" onMouseDown={(e) => { e.preventDefault(); execFormat('underline'); }}><Underline size={14} /></button>
+                <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
+                <button type="button" className="rte-btn" title="Bullet List" onMouseDown={(e) => { e.preventDefault(); execFormat('insertUnorderedList'); }}><List size={14} /></button>
+                <button type="button" className="rte-btn" title="Numbered List" onMouseDown={(e) => { e.preventDefault(); execFormat('insertOrderedList'); }}><ListOrdered size={14} /></button>
+              </div>
+
+              <div
+                ref={editorRef}
+                contentEditable
+                suppressContentEditableWarning
+                className="rte-editor"
+                data-placeholder="Write your note here..."
+                style={{ minHeight: '200px', maxHeight: '400px', padding: '1rem', background: 'var(--surface)' }}
               />
-              {titleError && (
-                <p style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.4rem' }}>{titleError}</p>
-              )}
             </div>
 
-            {/* Rich Text Toolbar */}
-            <div className="rte-toolbar" style={{ padding: '0.5rem 1rem' }}>
-              <button type="button" className="rte-btn" title="Bold" onMouseDown={(e) => { e.preventDefault(); execFormat('bold'); }}>
-                <Bold size={14} />
-              </button>
-              <button type="button" className="rte-btn" title="Italic" onMouseDown={(e) => { e.preventDefault(); execFormat('italic'); }}>
-                <Italic size={14} />
-              </button>
-              <button type="button" className="rte-btn" title="Underline" onMouseDown={(e) => { e.preventDefault(); execFormat('underline'); }}>
-                <Underline size={14} />
-              </button>
-              <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-              <button type="button" className="rte-btn" title="Bullet List" onMouseDown={(e) => { e.preventDefault(); execFormat('insertUnorderedList'); }}>
-                <List size={14} />
-              </button>
-              <button type="button" className="rte-btn" title="Numbered List" onMouseDown={(e) => { e.preventDefault(); execFormat('insertOrderedList'); }}>
-                <ListOrdered size={14} />
-              </button>
-              <div style={{ width: '1px', background: 'var(--border)', margin: '0 0.25rem' }} />
-              <button type="button" className="rte-btn" title="Heading" style={{ fontVariant: 'small-caps', fontSize: '0.8rem', letterSpacing: '0.03em' }} onMouseDown={(e) => { e.preventDefault(); execFormat('formatBlock', 'h3'); }}>
-                H3
-              </button>
-              <button type="button" className="rte-btn" title="Normal text" style={{ fontSize: '0.8rem' }} onMouseDown={(e) => { e.preventDefault(); execFormat('formatBlock', 'p'); }}>
-                ¶
-              </button>
-            </div>
-
-            {/* Editor Area */}
-            <div
-              ref={editorRef}
-              contentEditable
-              suppressContentEditableWarning
-              className="rte-editor"
-              data-placeholder="Write your note here…"
-              style={{ minHeight: '280px', maxHeight: '480px', padding: '1rem 1.5rem', overflow: 'auto' }}
-            />
-
-            {/* Footer Actions */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1rem 1.5rem', borderTop: '1px solid var(--border)', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem', gap: '0.75rem' }}>
               <button className="btn btn-ghost" onClick={closeEditor}>Cancel</button>
               <button className="btn btn-primary" onClick={handleSave} style={{ display: 'flex', gap: '0.5rem' }}>
                 <Save size={18} /> Save Note
@@ -210,33 +189,38 @@ const Notes = () => {
               </p>
             ) : (
               notes.map((note) => (
-                <div key={note._id} className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', cursor: 'default' }}>
-                  {/* Card Header */}
+                <div key={note._id} className="card" style={{ display: 'flex', flexDirection: 'column', height: '100%', cursor: 'default', position: 'relative' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, wordBreak: 'break-word', paddingRight: '0.5rem', lineHeight: 1.3 }}>{note.title}</h3>
-                    <div style={{ display: 'flex', gap: '0.1rem', flexShrink: 0 }}>
-                      <button className="icon-btn" onClick={() => openEditor(note)} title="Edit note"><Edit2 size={15} /></button>
-                      <button className="icon-btn" onClick={() => requestDelete(note._id, note.title)} style={{ color: '#ef4444' }} title="Delete note"><Trash2 size={15} /></button>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, margin: 0, paddingRight: '1.5rem' }}>{note.title}</h3>
+                    <div className="dropdown-container">
+                      <button 
+                        className="icon-btn note-menu-btn" 
+                        onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === note._id ? null : note._id); }}
+                      >
+                        <MoreVertical size={18} />
+                      </button>
+                      
+                      {openMenuId === note._id && (
+                        <div className="dropdown-menu" style={{ right: 0, top: '100%' }}>
+                          <button className="dropdown-item" onClick={() => { setOpenMenuId(null); openEditor(note); }}>
+                            <Edit2 size={14} /> Edit
+                          </button>
+                          <button className="dropdown-item danger" onClick={() => { setOpenMenuId(null); requestDelete(note._id, note.title); }}>
+                            <Trash2 size={14} /> Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Card Content Preview — renders HTML from rich text */}
                   <div
                     className="text-muted"
-                    style={{ flexGrow: 1, fontSize: '0.9rem', lineHeight: 1.6, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 5, WebkitBoxOrient: 'vertical', marginBottom: '1rem' }}
+                    style={{ flexGrow: 1, fontSize: '0.9rem', lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', marginBottom: '1rem' }}
                     dangerouslySetInnerHTML={{ __html: note.content }}
                   />
 
-                  {/* Card Footer */}
-                  <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.6rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>Updated {new Date(note.updatedAt).toLocaleDateString()}</span>
-                    <button
-                      className="btn btn-primary"
-                      style={{ padding: '0.25rem 0.75rem', fontSize: '0.8rem' }}
-                      onClick={() => openEditor(note)}
-                    >
-                      Edit
-                    </button>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               ))
