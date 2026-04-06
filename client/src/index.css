@@ -22,9 +22,10 @@
   --text-main: #ffffff;
   --text-muted: #94a3b8;
   --primary: #818cf8;
-  --primary-hover: #6366f1;
+  --primary-hover: #a5b4fc;
   --surface: #1e293b;
   --border: #334155;
+  --border-strong: #475569;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
 }
@@ -128,9 +129,20 @@ a {
   border: 1px solid var(--border);
 }
 
+[data-theme='dark'] .btn-outline {
+  background-color: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text-main);
+}
+
 .btn-outline:hover {
   background-color: var(--border);
   color: var(--text-main);
+}
+
+[data-theme='dark'] .btn-outline:hover {
+  background-color: var(--border-strong);
+  border-color: #64748b;
 }
 
 @keyframes fadeIn {

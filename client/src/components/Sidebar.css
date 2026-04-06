@@ -41,12 +41,17 @@
   font-weight: 500;
   transition: var(--transition);
   box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.sidebar-link svg {
+  flex-shrink: 0;
 }
 
 .sidebar-link span {
   flex: 1;
   white-space: normal;
-  overflow-wrap: break-word;
+  word-break: break-word;
   line-height: 1.3;
 }
 
