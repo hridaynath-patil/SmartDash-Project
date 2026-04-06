@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ const Login = () => {
     }
 
     setError('');
+    setIsLoading(true);
     
     try {
       const res = await fetch('https://smartdash-project-backend.onrender.com/api/auth/login', {
@@ -36,6 +38,8 @@ const Login = () => {
       }
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,7 +77,14 @@ const Login = () => {
               </button>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary" style={{ padding: '0.75rem', marginTop: '1rem', fontSize: '1rem' }}>Sign In</button>
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
+            style={{ marginTop: '1rem', width: '100%', opacity: isLoading ? 0.7 : 1, cursor: isLoading ? 'wait' : 'pointer' }}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Signing In...' : 'Sign In'}
+          </button>
         </form>
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)' }}>
           Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Sign up</Link>
