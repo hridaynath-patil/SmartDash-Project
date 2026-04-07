@@ -1,5 +1,7 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
 import { AuthProvider } from './context/AuthContext';
 import { TaskProvider } from './context/TaskContext';
 import { NoteProvider } from './context/NoteContext';
@@ -25,9 +27,9 @@ const Loader = () => (
   </div>
 );
 
-import MainLayout from './components/MainLayout';
-
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <ToastProvider>
       <ThemeProvider>
@@ -35,25 +37,26 @@ function App() {
           <TaskProvider>
             <NoteProvider>
               <Router>
-                <div className="app-container-root">
-                  <Suspense fallback={<Loader />}>
-                    <Routes>
-                      {/* Public routes inside layout context but without Sidebar/Navbar */}
-                      <Route path="/" element={<Home />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/register" element={<Signup />} />
-
-                      {/* Protected routes wrapped in MainLayout */}
-                      <Route element={<MainLayout />}>
-                        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                        <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
-                        <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
-                        <Route path="/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />
-                        <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                      </Route>
-                    </Routes>
-                  </Suspense>
+                <div className="app-container">
+                  <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+                  <div className="main-content">
+                    <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+                    <div className="page-content">
+                      <Suspense fallback={<Loader />}>
+                        <Routes>
+                          <Route path="/" element={<Home />} />
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Signup />} />
+                          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                          <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+                          <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
+                          <Route path="/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />
+                          <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
+                          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        </Routes>
+                      </Suspense>
+                    </div>
+                  </div>
                 </div>
               </Router>
             </NoteProvider>
