@@ -7,9 +7,10 @@ import './Sidebar.css';
 interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  isCollapsed?: boolean;
 }
 
-const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
+const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
   const { user } = useContext(AuthContext);
   if (!user) return null;
 
@@ -27,9 +28,10 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     <>
       {/* Mobile backdrop */}
       {isOpen && <div className="sidebar-backdrop" onClick={() => setIsOpen(false)}></div>}
-      <div className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
-        <div className="sidebar-header" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
-          <h2 style={{ margin: 0 }}>SmartDash</h2>
+      <div className={`sidebar ${isOpen ? 'mobile-open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
+        <div className="sidebar-header" style={{ padding: isCollapsed ? '1rem' : '1.5rem', marginBottom: '1rem', justifyContent: isCollapsed ? 'center' : 'flex-start' }}>
+          {!isCollapsed && <h2 style={{ margin: 0 }}>SmartDash</h2>}
+          {isCollapsed && <div style={{ color: 'var(--primary)', fontWeight: 'bold', fontSize: '1.2rem' }}>S</div>}
           <button className="icon-btn mobile-close-btn" onClick={() => setIsOpen(false)} style={{ position: 'absolute', right: '1rem' }}>
             <X size={20} />
           </button>
@@ -40,9 +42,10 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             to={link.path} 
             key={link.name} 
             className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? link.name : ''}
           >
             {link.icon}
-            <span>{link.name}</span>
+            {!isCollapsed && <span>{link.name}</span>}
           </NavLink>
         ))}
       </nav>

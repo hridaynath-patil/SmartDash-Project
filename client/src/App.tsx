@@ -29,6 +29,15 @@ const Loader = () => (
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(!isSidebarOpen);
+    } else {
+      setIsSidebarCollapsed(!isSidebarCollapsed);
+    }
+  };
 
   return (
     <ToastProvider>
@@ -37,10 +46,14 @@ function App() {
           <TaskProvider>
             <NoteProvider>
               <Router>
-                <div className="app-container">
-                  <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+                <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+                  <Sidebar 
+                    isOpen={isSidebarOpen} 
+                    setIsOpen={setIsSidebarOpen} 
+                    isCollapsed={isSidebarCollapsed} 
+                  />
                   <div className="main-content">
-                    <Navbar toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+                    <Navbar toggleSidebar={toggleSidebar} />
                     <div className="page-content">
                       <Suspense fallback={<Loader />}>
                         <Routes>
