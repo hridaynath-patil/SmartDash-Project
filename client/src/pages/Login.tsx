@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 
 const Login = () => {
@@ -11,12 +11,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login, user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/money-dash';
 
   useEffect(() => {
     if (user) {
-      navigate('/money-dash');
+      navigate(from);
     }
-  }, [user, navigate]);
+  }, [user, navigate, from]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +40,7 @@ const Login = () => {
       const data = await res.json();
       if (res.ok) {
         login(data);
-        navigate('/money-dash');
+        navigate(from);
       } else {
         setError(data.message || 'Login failed');
       }
@@ -93,7 +95,7 @@ const Login = () => {
           </button>
         </form>
         <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)' }}>
-          Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Sign up</Link>
+          Don't have an account? <Link to="/register" state={{ from }} style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Sign up</Link>
         </p>
       </div>
     </div>

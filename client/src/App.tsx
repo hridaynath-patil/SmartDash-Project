@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import { AuthProvider } from './context/AuthContext';
@@ -11,6 +11,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { FinanceProvider } from './context/FinanceContext';
 
 // Lazy load pages for optimization
+const Prelogin = lazy(() => import('./pages/Prelogin'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
@@ -61,7 +62,7 @@ function App() {
                     <div className="page-content">
                       <Suspense fallback={<Loader />}>
                         <Routes>
-                          <Route path="/" element={<ProtectedRoute><Navigate to="/money-dash" replace /></ProtectedRoute>} />
+                          <Route path="/" element={<Prelogin />} />
                           <Route path="/login" element={<Login />} />
                           <Route path="/register" element={<Signup />} />
                           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
