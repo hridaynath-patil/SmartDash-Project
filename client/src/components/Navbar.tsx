@@ -17,8 +17,10 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
 
   const handleLogout = () => {
     setIsDropdownOpen(false);
-    logout();
     navigate('/');
+    setTimeout(() => {
+      logout();
+    }, 0);
   };
 
   return (
@@ -34,7 +36,7 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
           </div>
         </div>
       ) : (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={() => navigate('/')}>
           <h2 style={{ color: 'var(--primary)', margin: 0, fontSize: '1.5rem', fontWeight: 'bold' }}>SmartDash</h2>
         </div>
       )}

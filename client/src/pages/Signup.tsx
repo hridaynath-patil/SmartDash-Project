@@ -53,8 +53,30 @@ const Signup = () => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
-      <div className="card" style={{ width: '100%', maxWidth: '400px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '2rem' }}>Create Account</h2>
+      <div className="card" style={{ width: '100%', maxWidth: '400px', padding: '2rem 1.75rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '1.25rem' }}>
+          <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '44px',
+              height: '44px',
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, var(--primary), #818cf8)',
+              color: 'white',
+              fontSize: '1.2rem',
+              fontWeight: 700,
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
+            }}>
+              SD
+            </div>
+            <span style={{ fontSize: '1.15rem', fontWeight: 700, background: 'linear-gradient(135deg, var(--text-main), var(--primary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Smart Dash
+            </span>
+          </Link>
+        </div>
+        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '1.75rem', fontWeight: 600 }}>Create Account</h2>
         {error && <div style={{ color: '#ef4444', marginBottom: '1rem', textAlign: 'center', padding: '0.75rem', background: 'rgba(239,68,68,0.08)', borderRadius: 'var(--radius-md)', fontSize: '0.9rem', border: '1px solid rgba(239,68,68,0.2)' }}>{error}</div>}
         <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>

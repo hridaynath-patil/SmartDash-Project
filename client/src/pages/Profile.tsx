@@ -40,8 +40,10 @@ const Profile = () => {
   }
 
   const handleLogout = () => {
-    logout();
     navigate('/');
+    setTimeout(() => {
+      logout();
+    }, 0);
   };
 
   const completedTasks = tasks.filter(t => t.status === 'completed').length;

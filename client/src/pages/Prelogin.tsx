@@ -55,8 +55,8 @@ const Prelogin = () => {
       <div className="card" style={{
         position: 'relative',
         width: '100%',
-        maxWidth: '650px',
-        padding: '3.5rem 2.5rem',
+        maxWidth: '540px',
+        padding: '2.5rem 2rem',
         textAlign: 'center',
         background: 'var(--surface)',
         backdropFilter: 'blur(20px)',
@@ -85,7 +85,7 @@ const Prelogin = () => {
 
         {/* Heading */}
         <h1 style={{
-          fontSize: '3rem',
+          fontSize: '2.5rem',
           fontWeight: 800,
           letterSpacing: '-1.5px',
           marginBottom: '1.25rem',
@@ -96,17 +96,33 @@ const Prelogin = () => {
           Smart Dash
         </h1>
 
-        {/* 3-4 Line Product Feature Description */}
-        <p style={{
-          fontSize: '1.15rem',
-          lineHeight: '1.8',
-          color: 'var(--text-muted)',
-          maxWidth: '540px',
-          margin: '0 auto 2.5rem auto',
-          fontWeight: 400
+        {/* 3 Bullet Points Feature Description */}
+        <ul style={{
+          listStyleType: 'none',
+          padding: 0,
+          margin: '0 auto 2rem auto',
+          maxWidth: '440px',
+          textAlign: 'left',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.85rem',
+          fontSize: '0.95rem',
+          lineHeight: '1.6',
+          color: 'var(--text-muted)'
         }}>
-          Smart Dash is your all-in-one productivity and financial companion. Seamlessly manage your day-to-day workflow with our advanced Task Manager and rich-text Notes editor. Concurrently, take complete control of your finances with Money Dash, featuring interactive income & expense trackers, custom category tags, and smart data filters.
-        </p>
+          <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.2rem', marginTop: '0.1rem', flexShrink: 0 }}>🎯</span>
+            <span><strong>Task Manager:</strong> Plan, organize, and prioritize your daily workflow.</span>
+          </li>
+          <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.2rem', marginTop: '0.1rem', flexShrink: 0 }}>📝</span>
+            <span><strong>Rich Notes:</strong> Capture ideas and plans with a rich-text editor.</span>
+          </li>
+          <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.2rem', marginTop: '0.1rem', flexShrink: 0 }}>💰</span>
+            <span><strong>Money Dash:</strong> Track transactions and budgets with custom categories and filters.</span>
+          </li>
+        </ul>
 
         {/* Navigation Action Buttons */}
         <div style={{
