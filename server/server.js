@@ -19,6 +19,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/notes', require('./routes/noteRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/transactions', require('./routes/transactionRoutes'));
 app.use('/', (req, res) => {
     res.send('Hello World!');
 });
