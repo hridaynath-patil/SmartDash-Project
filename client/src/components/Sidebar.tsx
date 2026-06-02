@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter } from 'lucide-react';
-import { useContext } from 'react';
+import { LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter, ChevronDown, ChevronRight } from 'lucide-react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
 
@@ -13,26 +13,21 @@ interface SidebarProps {
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
   const { user, avatar } = useContext(AuthContext);
   const location = useLocation();
+
+  const [isTaskManagerOpen, setIsTaskManagerOpen] = useState(
+    location.pathname === '/dashboard' || location.pathname === '/tasks' || location.pathname === '/notes'
+  );
+
+  // Auto-expand Task Manager dropdown if we are on any of its child pages
+  useEffect(() => {
+    if (location.pathname === '/dashboard' || location.pathname === '/tasks' || location.pathname === '/notes') {
+      setIsTaskManagerOpen(true);
+    }
+  }, [location.pathname]);
   
   if (!user) return null;
 
   const isMoneyPage = location.pathname.startsWith('/money');
-
-  const links = [
-    { name: 'Home', path: '/', icon: <Home size={20} /> },
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Tasks', path: '/tasks', icon: <CheckSquare size={20} /> },
-    { name: 'Notes', path: '/notes', icon: <StickyNote size={20} /> },
-    
-    // Money Manager Section
-    { name: 'Money Dash', path: '/money-dash', icon: <PiggyBank size={20} /> },
-    { name: 'Category', path: '/money-categories', icon: <List size={20} /> },
-    { name: 'Income', path: '/money-income', icon: <ArrowUpCircle size={20} /> },
-    { name: 'Expense', path: '/money-expense', icon: <ArrowDownCircle size={20} /> },
-    { name: 'Filters', path: '/money-filters', icon: <Filter size={20} /> },
-    
-    { name: 'Profile', path: '/profile', icon: <User size={20} /> },
-  ];
 
   return (
     <>
@@ -73,17 +68,106 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
         )}
 
         <nav className="sidebar-nav">
-          {links.map((link) => (
-            <NavLink 
-              to={link.path} 
-              key={link.name} 
-              className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-              title={isCollapsed ? link.name : ''}
+          {/* Task Manager Dropdown Group */}
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <div 
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', width: '100%' }}
+              onClick={() => setIsTaskManagerOpen(!isTaskManagerOpen)}
             >
-              {link.icon}
-              {!isCollapsed && <span>{link.name}</span>}
-            </NavLink>
-          ))}
+              <NavLink 
+                to="/dashboard" 
+                className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                style={{ flexGrow: 1, paddingRight: '2rem' }}
+              >
+                <LayoutDashboard size={20} />
+                {!isCollapsed && <span>Task Manager</span>}
+              </NavLink>
+
+              {!isCollapsed && (
+                <div style={{ position: 'absolute', right: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', pointerEvents: 'none' }}>
+                  {isTaskManagerOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </div>
+              )}
+            </div>
+
+            {/* Nested dropdown items */}
+            {isTaskManagerOpen && !isCollapsed && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', paddingLeft: '1.2rem', marginTop: '0.35rem', borderLeft: '2px solid var(--border)', marginLeft: '1.5rem' }}>
+                <NavLink 
+                  to="/tasks" 
+                  className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                  style={{ padding: '0.6rem 0.8rem', fontSize: '0.9rem' }}
+                >
+                  <CheckSquare size={18} />
+                  <span>Tasks</span>
+                </NavLink>
+                <NavLink 
+                  to="/notes" 
+                  className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                  style={{ padding: '0.6rem 0.8rem', fontSize: '0.9rem' }}
+                >
+                  <StickyNote size={18} />
+                  <span>Notes</span>
+                </NavLink>
+              </div>
+            )}
+          </div>
+
+          {/* Money Manager Sections */}
+          <NavLink 
+            to="/money-dash" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Money Dash' : ''}
+          >
+            <PiggyBank size={20} />
+            {!isCollapsed && <span>Money Dash</span>}
+          </NavLink>
+
+          <NavLink 
+            to="/money-categories" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Category' : ''}
+          >
+            <List size={20} />
+            {!isCollapsed && <span>Category</span>}
+          </NavLink>
+
+          <NavLink 
+            to="/money-income" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Income' : ''}
+          >
+            <ArrowUpCircle size={20} />
+            {!isCollapsed && <span>Income</span>}
+          </NavLink>
+
+          <NavLink 
+            to="/money-expense" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Expense' : ''}
+          >
+            <ArrowDownCircle size={20} />
+            {!isCollapsed && <span>Expense</span>}
+          </NavLink>
+
+          <NavLink 
+            to="/money-filters" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Filters' : ''}
+          >
+            <Filter size={20} />
+            {!isCollapsed && <span>Filters</span>}
+          </NavLink>
+
+          {/* Account Profile Section */}
+          <NavLink 
+            to="/profile" 
+            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            title={isCollapsed ? 'Profile' : ''}
+          >
+            <User size={20} />
+            {!isCollapsed && <span>Profile</span>}
+          </NavLink>
         </nav>
       </div>
     </>
