@@ -4,6 +4,23 @@ A comprehensive and elegantly designed full-stack productivity dashboard that br
 
 🔗 **Live Link:** [https://smartdash-project.onrender.com/](https://smartdash-project.onrender.com/)
 
+### 🔑 Demo Credentials
+* **Email:** `hridaynathpatil1@gmail.com`
+* **Password:** `Zcpl@1234`
+
+### 📸 Application Screenshots
+| **Prelogin Landing Page** | **Money Dash (Overview)** |
+|:---:|:---:|
+| ![Prelogin](./client/src/assets/prelogin.png) | ![Money Dash](./client/src/assets/money_dash.png) |
+
+| **Tasks Management** | **Rich Notes Editor** |
+|:---:|:---:|
+| ![Tasks](./client/src/assets/tasks.png) | ![Notes](./client/src/assets/notes.png) |
+
+| **Income Overview & Trends** |
+|:---:|
+| ![Income](./client/src/assets/income.png) |
+
 ---
 
 ## Page-by-Page Feature Breakdown
