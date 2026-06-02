@@ -1,66 +1,88 @@
 import { useContext, useState, useMemo } from 'react';
 import { FinanceContext } from '../context/FinanceContext';
-import { Search, Calendar, Sliders, Trash2 } from 'lucide-react';
+import { Search, Calendar, Trash2 } from 'lucide-react';
 
 const Filters = () => {
-  const { transactions, categories, deleteTransaction } = useContext(FinanceContext);
+  const { transactions, deleteTransaction } = useContext(FinanceContext);
 
   // Filter States
   const [search, setSearch] = useState('');
-  const [type, setType] = useState<'all' | 'income' | 'expense'>('all');
-  const [category, setCategory] = useState('all');
+  const [type, setType] = useState<'income' | 'expense' | 'all'>('income');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [sortBy, setSortBy] = useState<'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'>('date-desc');
+  const [sortField, setSortField] = useState<'date' | 'amount'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  // Trigger search execution
+  const [isApplied, setIsApplied] = useState(false);
+
+  // States frozen for search execution
+  const [appliedFilters, setAppliedFilters] = useState({
+    search: '',
+    type: 'income',
+    startDate: '',
+    endDate: '',
+    sortField: 'date',
+    sortOrder: 'asc'
+  });
+
+  const handleApplyFilters = () => {
+    setAppliedFilters({
+      search,
+      type,
+      startDate,
+      endDate,
+      sortField,
+      sortOrder
+    });
+    setIsApplied(true);
+  };
 
   // Filter & Sort Logic
   const filteredTransactions = useMemo(() => {
+    if (!isApplied) return [];
+
     let result = [...transactions];
 
-    // Search query
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(t => t.title.toLowerCase().includes(q));
-    }
-
     // Transaction Type
-    if (type !== 'all') {
-      result = result.filter(t => t.type === type);
-    }
-
-    // Category
-    if (category !== 'all') {
-      result = result.filter(t => t.category?._id === category);
+    if (appliedFilters.type !== 'all') {
+      result = result.filter(t => t.type === appliedFilters.type);
     }
 
     // Date Range
-    if (startDate) {
-      const start = new Date(startDate);
-      start.setHours(0,0,0,0);
+    if (appliedFilters.startDate) {
+      const start = new Date(appliedFilters.startDate);
+      start.setHours(0, 0, 0, 0);
       result = result.filter(t => new Date(t.date) >= start);
     }
-    if (endDate) {
-      const end = new Date(endDate);
-      end.setHours(23,59,59,999);
+    if (appliedFilters.endDate) {
+      const end = new Date(appliedFilters.endDate);
+      end.setHours(23, 59, 59, 999);
       result = result.filter(t => new Date(t.date) <= end);
+    }
+
+    // Text Search
+    if (appliedFilters.search.trim()) {
+      const q = appliedFilters.search.toLowerCase();
+      result = result.filter(t => 
+        t.title.toLowerCase().includes(q) || 
+        (t.category?.name && t.category.name.toLowerCase().includes(q))
+      );
     }
 
     // Sorting
     result.sort((a, b) => {
-      if (sortBy === 'date-desc') {
-        return new Date(b.date).getTime() - new Date(a.date).getTime();
-      } else if (sortBy === 'date-asc') {
-        return new Date(a.date).getTime() - new Date(b.date).getTime();
-      } else if (sortBy === 'amount-desc') {
-        return b.amount - a.amount;
-      } else if (sortBy === 'amount-asc') {
-        return a.amount - b.amount;
+      let comparison = 0;
+      if (appliedFilters.sortField === 'date') {
+        comparison = new Date(a.date).getTime() - new Date(b.date).getTime();
+      } else {
+        comparison = a.amount - b.amount;
       }
-      return 0;
+      return appliedFilters.sortOrder === 'asc' ? comparison : -comparison;
     });
 
     return result;
-  }, [transactions, search, type, category, startDate, endDate, sortBy]);
+  }, [transactions, isApplied, appliedFilters]);
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
@@ -77,135 +99,135 @@ const Filters = () => {
   };
 
   return (
-    <div>
+    <div style={{ paddingBottom: '2rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)' }}>Transaction Filters</h2>
-        <p className="text-muted" style={{ margin: '0.25rem 0 0 0' }}>Search, slice, and sort your financial logs</p>
+        <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)' }}>Filter Transactions</h2>
       </div>
 
       {/* Filters Control Card */}
-      <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.2rem', borderBottom: '1px solid var(--border)', paddingBottom: '0.8rem' }}>
-          <Sliders size={18} className="text-muted" />
-          <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600 }}>Filter Controls</h3>
-        </div>
+      <div className="card" style={{ padding: '1.75rem', marginBottom: '2rem' }}>
+        <h3 style={{ margin: '0 0 1.2rem 0', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main)' }}>
+          Select the filters
+        </h3>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap', 
+          alignItems: 'flex-end', 
+          gap: '1rem' 
+        }}>
           
-          {/* Text Search */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Search Description</label>
-            <div style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          {/* Type Filter */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '1 1 150px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Type</label>
+            <select 
+              value={type}
+              onChange={(e) => setType(e.target.value as any)}
+              style={{ width: '100%', padding: '0.7rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
+            >
+              <option value="income">Income</option>
+              <option value="expense">Expense</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+
+          {/* Start Date */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '1 1 150px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Start Date</label>
+            <input 
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              style={{ width: '100%', padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
+            />
+          </div>
+
+          {/* End Date */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '1 1 150px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>End Date</label>
+            <input 
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              style={{ width: '100%', padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
+            />
+          </div>
+
+          {/* Sort Field */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '1 1 150px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Sort Field</label>
+            <select 
+              value={sortField}
+              onChange={(e) => setSortField(e.target.value as any)}
+              style={{ width: '100%', padding: '0.7rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
+            >
+              <option value="date">Date</option>
+              <option value="amount">Amount</option>
+            </select>
+          </div>
+
+          {/* Sort Order */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '1 1 150px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Sort Order</label>
+            <select 
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value as any)}
+              style={{ width: '100%', padding: '0.7rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
+            >
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+
+          {/* Search bar + Purple apply button */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: '2 1 250px' }}>
+            <label style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>Search</label>
+            <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
               <input 
                 type="text" 
                 placeholder="Search..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                style={{ width: '100%', padding: '0.55rem 0.8rem 0.55rem 2.2rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
+                style={{ flexGrow: 1, padding: '0.65rem 0.8rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
               />
+              <button 
+                type="button" 
+                onClick={handleApplyFilters}
+                style={{ 
+                  backgroundColor: '#6320d4', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '8px', 
+                  width: '42px', 
+                  height: '42px', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#4f16b0'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#6320d4'}
+              >
+                <Search size={18} />
+              </button>
             </div>
           </div>
-
-          {/* Type Filter */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Transaction Type</label>
-            <select 
-              value={type}
-              onChange={(e) => setType(e.target.value as 'all' | 'income' | 'expense')}
-              style={{ width: '100%', padding: '0.55rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
-            >
-              <option value="all">All Types</option>
-              <option value="income">Incomes only</option>
-              <option value="expense">Expenses only</option>
-            </select>
-          </div>
-
-          {/* Category Filter */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Category</label>
-            <select 
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              style={{ width: '100%', padding: '0.55rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
-            >
-              <option value="all">All Categories</option>
-              {categories.map(cat => (
-                <option key={cat._id} value={cat._id}>{cat.icon} {cat.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Sort Control */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Sort By</label>
-            <select 
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
-              style={{ width: '100%', padding: '0.55rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
-            >
-              <option value="date-desc">Date: Newest first</option>
-              <option value="date-asc">Date: Oldest first</option>
-              <option value="amount-desc">Amount: Highest first</option>
-              <option value="amount-asc">Amount: Lowest first</option>
-            </select>
-          </div>
-
-        </div>
-
-        {/* Date Filters Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Start Date</label>
-            <input 
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              style={{ width: '100%', padding: '0.55rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
-            />
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-            <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>End Date</label>
-            <input 
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              style={{ width: '100%', padding: '0.55rem 0.8rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-color)', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem' }}
-            />
-          </div>
-
-          {/* Reset Filters Button */}
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button 
-              onClick={() => {
-                setSearch('');
-                setType('all');
-                setCategory('all');
-                setStartDate('');
-                setEndDate('');
-                setSortBy('date-desc');
-              }}
-              className="btn btn-outline"
-              style={{ width: '100%', padding: '0.55rem 1rem', border: '1px solid var(--border)', fontSize: '0.9rem', color: 'var(--text-main)' }}
-            >
-              Reset Filters
-            </button>
-          </div>
-
-          {/* Blank space to balance grid */}
-          <div />
 
         </div>
       </div>
 
-      {/* Transaction List Card */}
+      {/* Transactions Container */}
       <div className="card" style={{ padding: '2rem' }}>
-        <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.2rem', fontWeight: 700 }}>Filtered Results ({filteredTransactions.length})</h3>
+        <h3 style={{ margin: '0 0 1.5rem 0', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>Transactions</h3>
 
-        {filteredTransactions.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3.5rem 2rem', color: 'var(--text-muted)', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)' }}>
+        {!isApplied ? (
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+            Select the filters and click apply to filter the transactions
+          </div>
+        ) : filteredTransactions.length === 0 ? (
+          <div style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
             No transactions match the selected filters.
           </div>
         ) : (
