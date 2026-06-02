@@ -1,5 +1,5 @@
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter, LogOut } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter } from 'lucide-react';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
@@ -11,9 +11,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
-  const { user, avatar, logout } = useContext(AuthContext);
+  const { user, avatar } = useContext(AuthContext);
   const location = useLocation();
-  const navigate = useNavigate();
   
   if (!user) return null;
 
@@ -70,31 +69,6 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
               />
             </div>
             <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-main)' }}>{user.name || 'User'}</span>
-            <button 
-              onClick={() => {
-                logout();
-                navigate('/login');
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.3rem',
-                background: 'none',
-                border: 'none',
-                color: '#ef4444',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                padding: '0.2rem 0.6rem',
-                borderRadius: '4px',
-                marginTop: '0.2rem',
-                transition: 'background-color 0.2s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.08)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-            >
-              <LogOut size={14} /> Log out
-            </button>
           </div>
         )}
 
