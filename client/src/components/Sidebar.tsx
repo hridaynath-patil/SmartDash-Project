@@ -1,5 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom';
-import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X, PiggyBank, List, ArrowUpCircle, ArrowDownCircle, Filter, LogOut } from 'lucide-react';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
@@ -11,8 +11,9 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
-  const { user } = useContext(AuthContext);
+  const { user, avatar, logout } = useContext(AuthContext);
   const location = useLocation();
+  const navigate = useNavigate();
   
   if (!user) return null;
 
@@ -63,12 +64,37 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0.5rem 0 1.5rem 0', gap: '0.4rem', borderBottom: '1px solid var(--border)', paddingBottom: '1.2rem' }}>
             <div style={{ width: '70px', height: '70px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--primary)', backgroundColor: 'var(--bg-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <img 
-                src={`https://api.dicebear.com/7.x/adventurer/svg?seed=${user.name || 'Bushan'}`} 
+                src={avatar || `https://ui-avatars.com/api/?name=${user.name || 'User'}&background=6366f1&color=fff&size=100`} 
                 alt="Avatar" 
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
               />
             </div>
             <span style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-main)' }}>{user.name || 'User'}</span>
+            <button 
+              onClick={() => {
+                logout();
+                navigate('/login');
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                background: 'none',
+                border: 'none',
+                color: '#ef4444',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                padding: '0.2rem 0.6rem',
+                borderRadius: '4px',
+                marginTop: '0.2rem',
+                transition: 'background-color 0.2s'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.08)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <LogOut size={14} /> Log out
+            </button>
           </div>
         )}
 
