@@ -12,7 +12,7 @@ const Home = () => {
         Smart Productivity Dashboard
       </h1>
       <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto 2rem auto', lineHeight: '1.6' }}>
-        Manage your tasks, write notes, monitor the weather, and search for movies, all in one sleek interface.
+        Manage your tasks and write notes, all in one sleek interface.
       </p>
       <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
         <Link to="/dashboard" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '1.1rem' }}>

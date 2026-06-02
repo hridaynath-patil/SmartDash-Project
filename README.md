@@ -2,14 +2,12 @@
 
 ![Smart Productivity Dashboard UI](./client/src/assets/docs-screenshot.png)
 
-A comprehensive and elegantly designed full-stack productivity dashboard that brings your tasks, notes, weather updates, and entertainment into a single unified space.
+A comprehensive and elegantly designed full-stack productivity dashboard that brings your tasks and notes into a single unified space.
 
 ## Features
 
 - **Dynamic Task Management**: Easily add, edit, track, and filter tasks.
 - **Note Taking Application**: Rich text editing with smooth categorization.
-- **Weather Widget**: Real-time accurate weather forecasting.
-- **Movies & Entertainment**: Stay up to date with trending movies.
 - **Beautiful UI System**: A visually stunning interface with custom modern design aesthetic, typography, and responsive menus.
 - **User Authentication**: Secure login and signup flows to keep your productivity data safe.
 

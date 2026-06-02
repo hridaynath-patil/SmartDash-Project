@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, LayoutDashboard, CheckSquare, StickyNote, CloudRain, Film, User, X } from 'lucide-react';
+import { Home, LayoutDashboard, CheckSquare, StickyNote, User, X } from 'lucide-react';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import './Sidebar.css';
@@ -19,8 +19,6 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed }: SidebarProps) => {
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Tasks', path: '/tasks', icon: <CheckSquare size={20} /> },
     { name: 'Notes', path: '/notes', icon: <StickyNote size={20} /> },
-    { name: 'Weather', path: '/weather', icon: <CloudRain size={20} /> },
-    { name: 'Movies', path: '/movies', icon: <Film size={20} /> },
     { name: 'Profile', path: '/profile', icon: <User size={20} /> },
   ];
 

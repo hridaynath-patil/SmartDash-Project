@@ -16,8 +16,6 @@ const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Tasks = lazy(() => import('./pages/Tasks'));
 const Notes = lazy(() => import('./pages/Notes'));
-const Weather = lazy(() => import('./pages/Weather'));
-const Movies = lazy(() => import('./pages/Movies'));
 const Profile = lazy(() => import('./pages/Profile'));
 
 // Fallback loader
@@ -47,10 +45,10 @@ function App() {
             <NoteProvider>
               <Router>
                 <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
-                  <Sidebar 
-                    isOpen={isSidebarOpen} 
-                    setIsOpen={setIsSidebarOpen} 
-                    isCollapsed={isSidebarCollapsed} 
+                  <Sidebar
+                    isOpen={isSidebarOpen}
+                    setIsOpen={setIsSidebarOpen}
+                    isCollapsed={isSidebarCollapsed}
                   />
                   <div className="main-content">
                     <Navbar toggleSidebar={toggleSidebar} />
@@ -63,8 +61,6 @@ function App() {
                           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                           <Route path="/tasks" element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
                           <Route path="/notes" element={<ProtectedRoute><Notes /></ProtectedRoute>} />
-                          <Route path="/weather" element={<ProtectedRoute><Weather /></ProtectedRoute>} />
-                          <Route path="/movies" element={<ProtectedRoute><Movies /></ProtectedRoute>} />
                           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         </Routes>
                       </Suspense>
