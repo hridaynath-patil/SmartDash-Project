@@ -2,6 +2,8 @@
 
 A comprehensive and elegantly designed full-stack productivity dashboard that brings your tasks, rich notes, and personal financial management into a single unified space.
 
+🔗 **Live Link:** [https://smartdash-project.onrender.com/](https://smartdash-project.onrender.com/)
+
 ---
 
 ## Page-by-Page Feature Breakdown
