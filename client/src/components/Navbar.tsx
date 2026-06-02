@@ -18,7 +18,7 @@ const Navbar = ({ toggleSidebar }: NavbarProps) => {
   const handleLogout = () => {
     setIsDropdownOpen(false);
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
