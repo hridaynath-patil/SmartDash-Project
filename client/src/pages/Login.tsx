@@ -14,7 +14,7 @@ const Login = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      navigate('/money-dash');
     }
   }, [user, navigate]);
 
@@ -38,7 +38,7 @@ const Login = () => {
       const data = await res.json();
       if (res.ok) {
         login(data);
-        navigate('/dashboard');
+        navigate('/money-dash');
       } else {
         setError(data.message || 'Login failed');
       }
